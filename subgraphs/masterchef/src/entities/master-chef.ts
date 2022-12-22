@@ -9,9 +9,9 @@ export function getOrCreateMasterChef(block: ethereum.Block): MasterChef {
     masterChef = new MasterChef(dataSource.address().toHex());
     masterChef.totalRegularAllocPoint = BI_ZERO;
     masterChef.totalSpecialAllocPoint = BI_ZERO;
-    masterChef.cakeRateToBurn = BigInt.fromString("750000000000");
-    masterChef.cakeRateToRegularFarm = BigInt.fromString("100000000000");
-    masterChef.cakeRateToSpecialFarm = BigInt.fromString("150000000000");
+    masterChef.kaloRateToBurn = BigInt.fromString("750000000000");
+    masterChef.kaloRateToRegularFarm = BigInt.fromString("100000000000");
+    masterChef.kaloRateToSpecialFarm = BigInt.fromString("150000000000");
     masterChef.poolCount = BI_ZERO;
   }
 

@@ -4,9 +4,9 @@ type MasterChef @entity {
 
   totalRegularAllocPoint: BigInt!
   totalSpecialAllocPoint: BigInt!
-  cakeRateToBurn: BigInt!
-  cakeRateToRegularFarm: BigInt!
-  cakeRateToSpecialFarm: BigInt!
+  kaloRateToBurn: BigInt!
+  kaloRateToRegularFarm: BigInt!
+  kaloRateToSpecialFarm: BigInt!
 
   pools: [Pool!] @derivedFrom(field: "masterChef")
   poolCount: BigInt!
@@ -23,7 +23,7 @@ type Pool @entity {
 
   allocPoint: BigInt!
   lastRewardBlock: BigInt!
-  accCakePerShare: BigInt!
+  accKaloPerShare: BigInt!
   totalBoostedShare: BigInt!
   isRegular: Boolean
 

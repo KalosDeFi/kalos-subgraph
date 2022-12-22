@@ -1,28 +1,28 @@
-specVersion: 0.0.3
-description: MasterChefV2
+specVersion: 0.0.1
+description: MasterChef
 repository: https://github.com/pancakeswap/pancakeswapswap-subgraph
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: MasterChefV2
+    name: MasterChef
     network: bsc
     source:
-      address: "0xa5f8C5Dbd5F286960b9d90548680aE5ebFf07652"
-      abi: MasterChefV2
-      startBlock: 17047980
+      address: "0x1172fAC86615CF70A941896F36d889771B8B9EF7"
+      abi: MasterChef
+      startBlock: 23686000
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.1
       language: wasm/assemblyscript
-      file: ./src/mappings/masterchefV2.ts
+      file: ./src/mappings/masterchef.ts
       entities:
-        - MasterChefV2
+        - MasterChef
         - Pool
         - User
       abis:
-        - name: MasterChefV2
-          file: ./abis/MasterChefV2.json
+        - name: MasterChef
+          file: ./abis/MasterChef.json
       eventHandlers:
         - event: Deposit(indexed address,indexed uint256,uint256)
           handler: handleDeposit

@@ -14,7 +14,7 @@ export function getOrCreatePool(pid: BigInt, block: ethereum.Block): Pool {
     pool.pair = ADDRESS_ZERO;
     pool.allocPoint = BI_ZERO;
     pool.lastRewardBlock = BI_ZERO;
-    pool.accCakePerShare = BI_ZERO;
+    pool.accKaloPerShare = BI_ZERO;
     pool.slpBalance = BI_ZERO;
     pool.userCount = BI_ZERO;
     pool.totalUsersCount = BI_ZERO;

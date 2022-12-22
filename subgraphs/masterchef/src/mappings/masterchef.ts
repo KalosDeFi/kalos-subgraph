@@ -7,16 +7,16 @@ import {
   SetPool,
   UpdatePool,
   Withdraw,
-  UpdateCakeRate,
+  UpdateKaloRate,
   UpdateBoostMultiplier,
-} from "../../generated/MasterChefV2/MasterChefV2";
+} from "../../generated/MasterChef/MasterChef";
 import { getOrCreateMasterChef } from "../entities/master-chef";
 import { getOrCreatePool } from "../entities/pool";
 import { getOrCreateUser, getBoostMultiplier } from "../entities/user";
-import { ACC_CAKE_PRECISION, BOOST_PRECISION, BI_ONE, BI_ZERO } from "../utils";
+import { ACC_KALO_PRECISION, BOOST_PRECISION, BI_ONE, BI_ZERO } from "../utils";
 
 export function handleAddPool(event: AddPool): void {
-  log.info("[MasterChefV2] Add Pool {} {} {} {}", [
+  log.info("[MasterChef] Add Pool {} {} {} {}", [
     event.params.pid.toString(),
     event.params.allocPoint.toString(),
     event.params.lpToken.toHex(),
@@ -41,7 +41,7 @@ export function handleAddPool(event: AddPool): void {
 }
 
 export function handleSetPool(event: SetPool): void {
-  log.info("[MasterChefV2] ˝Set Pool {} {}", [event.params.pid.toString(), event.params.allocPoint.toString()]);
+  log.info("[MasterChef] ˝Set Pool {} {}", [event.params.pid.toString(), event.params.allocPoint.toString()]);
 
   const masterChef = getOrCreateMasterChef(event.block);
   const pool = getOrCreatePool(event.params.pid, event.block);
@@ -63,23 +63,23 @@ export function handleSetPool(event: SetPool): void {
 }
 
 export function handleUpdatePool(event: UpdatePool): void {
-  log.info("[MasterChefV2] Update Pool {} {} {} {}", [
+  log.info("[MasterChef] Update Pool {} {} {} {}", [
     event.params.pid.toString(),
     event.params.lastRewardBlock.toString(),
     event.params.lpSupply.toString(),
-    event.params.accCakePerShare.toString(),
+    event.params.acckaloPerShare.toString(),
   ]);
 
   const masterChef = getOrCreateMasterChef(event.block);
   const pool = getOrCreatePool(event.params.pid, event.block);
 
-  pool.accCakePerShare = event.params.accCakePerShare;
+  pool.accKaloPerShare = event.params.accKaloPerShare;
   pool.lastRewardBlock = event.params.lastRewardBlock;
   pool.save();
 }
 
 export function handleDeposit(event: Deposit): void {
-  log.info("[MasterChefV2] Log Deposit {} {} {}", [
+  log.info("[MasterChef] Log Deposit {} {} {}", [
     event.params.user.toHex(),
     event.params.pid.toString(),
     event.params.amount.toString(),
@@ -99,15 +99,15 @@ export function handleDeposit(event: Deposit): void {
   user.rewardDebt = user.amount
     .times(multiplier)
     .div(BOOST_PRECISION)
-    .times(pool.accCakePerShare)
-    .div(ACC_CAKE_PRECISION);
+    .times(pool.accKaloPerShare)
+    .div(ACC_KALO_PRECISION);
 
   pool.save();
   user.save();
 }
 
 export function handleWithdraw(event: Withdraw): void {
-  log.info("[MasterChefV2] Log Withdraw {} {} {}", [
+  log.info("[MasterChef] Log Withdraw {} {} {}", [
     event.params.user.toHex(),
     event.params.pid.toString(),
     event.params.amount.toString(),
@@ -129,21 +129,21 @@ export function handleWithdraw(event: Withdraw): void {
   user.rewardDebt = user.amount
     .times(multiplier)
     .div(BOOST_PRECISION)
-    .times(pool.accCakePerShare)
-    .div(ACC_CAKE_PRECISION);
+    .times(pool.accKaloPerShare)
+    .div(ACC_KALO_PRECISION);
 
   pool.save();
   user.save();
 }
 
 export function handleEmergencyWithdraw(event: EmergencyWithdraw): void {
-  log.info("[MasterChefV2] Log Emergency Withdraw {} {} {}", [
+  log.info("[MasterChef] Log Emergency Withdraw {} {} {}", [
     event.params.user.toHex(),
     event.params.pid.toString(),
     event.params.amount.toString(),
   ]);
 
-  const masterChefV2 = getOrCreateMasterChef(event.block);
+  const masterChef = getOrCreateMasterChef(event.block);
   const pool = getOrCreatePool(event.params.pid, event.block);
   const user = getOrCreateUser(event.params.user, pool, event.block);
 
@@ -161,8 +161,8 @@ export function handleEmergencyWithdraw(event: EmergencyWithdraw): void {
   user.save();
 }
 
-export function handleUpdateCakeRate(event: UpdateCakeRate): void {
-  log.info("[MasterChefV2] Update Cake Rate {} {} {}", [
+export function handleUpdateKaloRate(event: UpdateKaloRate): void {
+  log.info("[MasterChef] Update Kalo Rate {} {} {}", [
     event.params.burnRate.toString(),
     event.params.regularFarmRate.toString(),
     event.params.specialFarmRate.toString(),
@@ -170,15 +170,15 @@ export function handleUpdateCakeRate(event: UpdateCakeRate): void {
 
   const masterChef = getOrCreateMasterChef(event.block);
 
-  masterChef.cakeRateToBurn = event.params.burnRate;
-  masterChef.cakeRateToRegularFarm = event.params.regularFarmRate;
-  masterChef.cakeRateToSpecialFarm = event.params.specialFarmRate;
+  masterChef.kaloRateToBurn = event.params.burnRate;
+  masterChef.kaloRateToRegularFarm = event.params.regularFarmRate;
+  masterChef.kaloRateToSpecialFarm = event.params.specialFarmRate;
 
   masterChef.save();
 }
 
 export function handleUpdateBoostMultiplier(event: UpdateBoostMultiplier): void {
-  log.info("[MasterChefV2] Update Boost Multiplier {} {} {} {}", [
+  log.info("[MasterChef] Update Boost Multiplier {} {} {} {}", [
     event.params.user.toString(),
     event.params.pid.toString(),
     event.params.oldMultiplier.toString(),
@@ -193,8 +193,8 @@ export function handleUpdateBoostMultiplier(event: UpdateBoostMultiplier): void 
   user.rewardDebt = user.amount
     .times(event.params.newMultiplier)
     .div(BOOST_PRECISION)
-    .times(pool.accCakePerShare)
-    .div(ACC_CAKE_PRECISION);
+    .times(pool.accKaloPerShare)
+    .div(ACC_KALO_PRECISION);
 
   pool.totalBoostedShare = pool.totalBoostedShare
     .minus(user.amount.times(event.params.oldMultiplier).div(BOOST_PRECISION))
